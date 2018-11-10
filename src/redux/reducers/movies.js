@@ -1,4 +1,5 @@
 import {
+    RESET_MOVIES,
     APPEND_MOVIES,
     SET_MOVIES_PAGE,
     SET_MOVIES_GENRES,
@@ -12,6 +13,12 @@ const initalState = {
 
 export default (state = initalState, action) => {
     switch (action.type) {
+    case RESET_MOVIES:
+        return {
+            ...state,
+            list: [],
+        };
+
     case APPEND_MOVIES:
         return {
             ...state,

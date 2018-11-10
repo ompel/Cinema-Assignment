@@ -1,8 +1,13 @@
 import {
+    RESET_MOVIES,
     APPEND_MOVIES,
     SET_MOVIES_PAGE,
     SET_MOVIES_GENRES,
 } from './actionTypes';
+
+export const resetMovies = () => ({
+    type: RESET_MOVIES,
+});
 
 export const appendMovies = movies => ({
     type: APPEND_MOVIES,

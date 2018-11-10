@@ -1,6 +1,13 @@
+.App {
+  height: 100%;
+}
+
+.MoviesBySearch {
+  height: 100%;
+}
 
 body {
-  background-color: #282c34;
+  background-color: #60656e79;
   min-height: 100vh;
   /* display: flex;
   flex-direction: column;
