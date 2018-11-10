@@ -5,7 +5,7 @@ import {
 } from '../actionTypes';
 
 const initalState = {
-    movies: [],
+    list: {},
     moviesApiPage: 0,
     moviesNumberOfPages: 0,
 };
@@ -15,7 +15,7 @@ export default (state = initalState, action) => {
     case APPEND_MOVIES:
         return {
             ...state,
-            movies: [...state.movies, ...action.movies],
+            list: { ...state.movies, ...action.movies },
         };
 
     case SET_MOVIES_PAGE:

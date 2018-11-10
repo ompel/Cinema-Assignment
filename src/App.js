@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import PopularMovies from './pages/popularMovies';
 import './App.css';
 

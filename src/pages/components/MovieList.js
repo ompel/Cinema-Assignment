@@ -1,55 +1,81 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { appendMovies, setMoviesPage, setMoviesGenres } from '../../redux/actions';
 import axios from 'axios';
 import _ from 'lodash';
+import async from 'async';
+import { appendMovies, setMoviesPage, setMoviesGenres } from '../../redux/actions';
 import PopularMovies from '../popularMovies';
 
-const moviesApiURL = 'https://api.themoviedb.org/3/';
-const moviesApiAuth = '?api_key=ea46fe4f2bcb9f24399b54ace4a51ec9';
 
-const moviesPopularEndpoint = 'movie/popular';
-const moviesGenresEndpoint = 'genre/movie/list';
-const movieInfoEndpoint = `movie/`;
+const moviesApiURL = `http://www.omdbapi.com/`;
+const moviesApiKey = '71cd4388';
+const moviesSearchQuery = 'iron man';
 
 class MovieList extends Component {
   componentWillMount() {
-    this.getMoviesGenres()
-        .then(this.getMovies());
+    this.getMovieList();
   }
 
   // Movies data fetching logic
-  getMoviesGenres = async () => {
-    await axios.get(`${moviesApiURL}${moviesGenresEndpoint}${moviesApiAuth}`).then((response) => {
-      this.props.setMoviesGenres(response.data.genres);
+  getMovieList = () => {
+    axios.get(`${moviesApiURL}`, {
+      params: {
+        apikey: moviesApiKey,
+        s: moviesSearchQuery,
+      },
+    }).then((response) => {
+      const movies = {};
+      async.each(response.data.Search, (movie, callback) => {
+        this.getMovieData(movie.imdbID).then((movieData) => {
+          movies[movie.imdbID] = movieData;
+          callback();
+        }).catch((error) => {
+          callback(error);
+        });
+      }, (error) => {
+        if (error) {
+          console.log(error);
+        } else {
+          // Appending the movies to the redux store
+          this.props.appendMovies(movies);
+          console.log(movies);
+        }
+      });
+    }).catch((e) => {
+      // in case of any error fetching the movie list
+      console.log(e);
     });
   }
 
-  getMovies = () => {
-    axios.get(`${moviesApiURL}${moviesPopularEndpoint}${moviesApiAuth}`).then((response) => {
-      let movies = [];
-      _.each(response.data.results, (movie) => {
-        // We need to fetch each movie's runtime
-        axios.get(`${moviesApiURL}${movieInfoEndpoint}${movie.id}${moviesApiAuth}`).then((movieInfo) => {
-          console.log(movieInfo.data.runtime);
-          let movieData = movieInfo.data
-          
-          // Append each movie to the movies array as a custom object
-          let movie = {
-            id: movieData.id,
-            title: movieData.title,
-            year: movieData.release_date,
-            runtime: movieData.runtime,
-            genre: movieData.genre,
-            director: movieData.director,
-          }
-        })
-        console.log(movie);
+  getMovieData = (imdbID) => {
+    return new Promise((resolve, reject) => {
+      axios.get(moviesApiURL, {
+        params: {
+          apikey: moviesApiKey,
+          i: imdbID,
+        },
+      }).then((movieData) => {
+        const {
+          Title,
+          Released,
+          Runtime,
+          Genre,
+          Director,
+          Poster,
+        } = movieData.data;
+        resolve({
+          title: Title,
+          year: new Date(Released).getFullYear(),
+          runtime: Runtime,
+          genre: Genre,
+          director: Director,
+          poster: Poster,
+        });
+      }).catch((e) => {
+        reject(e);
       });
-      // this.props.setMoviesPage(response.data.page, response.data.total_pages);
-      // this.props.appendMovies(response.data.results);
     });
-  }
+  };
 
   render() {
     return (
@@ -74,5 +100,5 @@ const mapDispatchToProps = {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(MovieList);
