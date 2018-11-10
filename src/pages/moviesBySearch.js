@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import MovieList from './components/MovieList';
 
-class PopularMovies extends Component {
+class MoviesBySearch extends Component {
   render() {
+    console.log(this.props);
+    
     return (
       <div className="App">
         <h1>
@@ -14,4 +16,4 @@ class PopularMovies extends Component {
   }
 }
 
-export default PopularMovies;
+export default MoviesBySearch;

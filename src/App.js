@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import PopularMovies from './pages/popularMovies';
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import MoviesBySearch from './pages/moviesBySearch';
+import NotFound from './pages/notFound';
+import Home from './pages/home';
 import './App.css';
 
 
@@ -8,9 +10,16 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <PopularMovies />
-      </div>
+      <Router>
+        <div className="App">
+          <header>Herolo React.js Cinema</header>
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/search" component={() => <MoviesBySearch />} />
+            <Route component={NotFound} />
+          </Switch>
+        </div>
+      </Router>
     );
   }
 }

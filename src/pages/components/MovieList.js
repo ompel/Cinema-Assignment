@@ -3,31 +3,35 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import _ from 'lodash';
 import async from 'async';
+import queryString from 'query-string'
 import { appendMovies, setMoviesPage, setMoviesGenres } from '../../redux/actions';
-import PopularMovies from '../popularMovies';
+import MovieItem from './MovieItem';
 
 
 const moviesApiURL = `http://www.omdbapi.com/`;
 const moviesApiKey = '71cd4388';
-const moviesSearchQuery = 'iron man';
 
 class MovieList extends Component {
   componentWillMount() {
-    this.getMovieList();
+    this.getMovieList(this.props.search.s);
   }
 
   // Movies data fetching logic
-  getMovieList = () => {
+  getMovieList = (queryString) => {
     axios.get(`${moviesApiURL}`, {
       params: {
         apikey: moviesApiKey,
-        s: moviesSearchQuery,
+        s: queryString,
       },
     }).then((response) => {
-      const movies = {};
+      // const movies = {};
+      const movies = [];
+
       async.each(response.data.Search, (movie, callback) => {
         this.getMovieData(movie.imdbID).then((movieData) => {
-          movies[movie.imdbID] = movieData;
+          // movies[movie.imdbID] = movieData;
+          const movieItem = <MovieItem key={movie.imdbID} data={movieData} />;
+          movies.push(movieItem);
           callback();
         }).catch((error) => {
           callback(error);
@@ -38,7 +42,6 @@ class MovieList extends Component {
         } else {
           // Appending the movies to the redux store
           this.props.appendMovies(movies);
-          console.log(movies);
         }
       });
     }).catch((e) => {
@@ -79,17 +82,16 @@ class MovieList extends Component {
 
   render() {
     return (
-      <div className="App">
-        <h1>
-          MOVIES
-        </h1>
+      <div className="MovieList">
+        {this.props.movies}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  movies: state.movies,
+  movies: state.movies.list,
+  search: queryString.parse(state.router.location.search),
 });
 
 const mapDispatchToProps = {
