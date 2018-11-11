@@ -3,11 +3,22 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import async from 'async';
 import queryString from 'query-string';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import {
-  resetMovies, appendMovies, setMoviesPage,
+  Button,
+  Breadcrumb,
+  BreadcrumbItem,
+  Navbar,
+  Nav,
+} from 'reactstrap';
+import {
+  resetMovies,
+  appendMovies,
+  setMoviesPage,
+  openMovieModal,
 } from '../redux/actions';
 import MovieList from './components/MovieList';
+import './moviesBySearch.css';
 
 const moviesApiURL = 'http://www.omdbapi.com/';
 const moviesApiKey = '71cd4388';
@@ -90,11 +101,18 @@ class MoviesBySearch extends Component {
   };
 
   render() {
+    const currentQuery = this.state.search.s ? this.state.search.s.replace(/\b\w/g, l => l.toUpperCase()) : '';
     return (
       <div className="MoviesBySearch">
-        <h1>
-          Now showing movies by the search query: {this.state.search.s}
-        </h1>
+        <Navbar className="fixed-top justify-content-center" color="dark" light expand="lg">
+          <Breadcrumb className="mr-auto">
+            <BreadcrumbItem><Link to='/'>Herolo React.js Cinema</Link></BreadcrumbItem>
+            <BreadcrumbItem active>{`Search: ${currentQuery}`}</BreadcrumbItem>
+          </Breadcrumb>
+          <Nav className="ml-auto" navbar>
+            <Button color="success" onClick={() => this.props.openMovieModal()}>Add new movie</Button>
+          </Nav>
+        </Navbar>
         <MovieList movieList={this.props.movies} />
       </div>
     );
@@ -110,6 +128,7 @@ const mapDispatchToProps = {
   resetMovies,
   appendMovies,
   setMoviesPage,
+  openMovieModal,
 };
 
 

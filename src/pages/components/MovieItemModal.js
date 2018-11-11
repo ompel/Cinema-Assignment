@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   editMovieInfo,
-  deleteMovie,
+  deleteMovieByID,
+  addMovie,
 } from '../../redux/actions';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -20,6 +21,7 @@ import {
   Alert,
 } from 'reactstrap';
 import _ from 'lodash';
+import async from 'async';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './MovieItemModal.css';
 
@@ -45,46 +47,116 @@ class MovieItemModal extends Component {
         director: '',
       },
       formValidationErrors: false,
+      editMode: false,
     };
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    // Deep check of equality
     if (!_.isEqual(prevProps.movie, this.props.movie)) {
-      this.setState(this.props.movie);
+      // Deep check of equality
+      if (!_.isEmpty(this.props.movie)) {
+        this.setState({
+          ...this.state,
+          ...this.props.movie,
+          editMode: true,
+        });
+      } else {
+        // New movie mode, reset local state
+        this.resetState();
+      }
     }
   }
 
+  resetState = () => {
+    this.setState({
+      ...this.state,
+      id: this.props.movieID || '',
+      title: this.props.movie.title || '',
+      year: this.props.movie.year || '',
+      runtime: this.props.movie.runtime || '',
+      genre: this.props.movie.genre || '',
+      director: this.props.movie.director || '',
+      poster: this.props.movie.poster || '',
+      editMode: false,
+      formValidationErrors: false,
+      formValidationTexts: {
+        title: '',
+        year: '',
+        runtime: '',
+        genre: '',
+        director: '',
+      },
+    });
+  }
+
   handleChange = (event) => {
-    this.validateField(event.target.name, event.target.value)
-    this.setState({ [event.target.name]: event.target.value });
+    let field = event.target.name;
+    let value = event.target.value;
+    let validation = { validate: true, error: '' };
+    this.validateField(event.target.name, event.target.value).then(() => {
+      this.setState({
+        ...this.state,
+        formValidationTexts: {
+          [field]: '',
+        },
+      });
+    }).catch((error) => {
+      validation = { validate: false, error };
+      this.setState({
+        ...this.state,
+        formValidationTexts: {
+          ...this.state.formValidationTexts,
+          [field]: validation.validate ? '' : validation.error,
+        },
+      });
+    });
+    this.setState({
+      ...this.state,
+      [field]: value,
+    });
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
     this.setState({ formValidationErrors: false });
     // Final form validation
-    _.each(['title', 'year', 'runtime', 'genre', 'director'], (field) => {
+    async.each(['title', 'year', 'runtime', 'genre', 'director'], (field, callback) => {
       const value = this.state[field];
-      if (!this.validateField(field, value)) {
+      this.validateField(field, value).then(() => {
+        callback();
+      }).catch((error) => {
         // The form has validation error, present alert
-        this.setState({ formValidationErrors: true });
+        this.setState({
+          ...this.state,
+          formValidationErrors: true,
+          formValidationTexts: {
+            ...this.state.formValidationTexts,
+            [field]: error,
+          },
+        });
+        callback(error);
+      });
+    }, (error) => {
+      if (!error) {
+        // Everything is validated!
+        // Submit the form
+        const movie = {
+          title: this.state.title,
+          year: this.state.year,
+          runtime: this.state.runtime,
+          genre: this.state.genre,
+          director: this.state.director,
+          poster: this.state.poster,
+        };
+        if (this.state.editMode) {
+          this.props.editMovieInfo(this.state.id, movie);
+        } else {
+          this.props.addMovie(movie);
+        }
+        this.props.closeModal();
+        this.resetState();
       }
     });
-
-    if (!this.state.formValidationErrors) {
-      // Submit the form
-      const movie = {
-        title: this.state.title,
-        year: this.state.year,
-        runtime: this.state.runtime,
-        genre: this.state.genre,
-        director: this.state.director,
-        poster: this.state.poster,
-      };
-      this.props.editMovieInfo(this.state.id, movie);
-      this.props.closeModal();
-    }
   }
 
   deleteSelectedMovie = () => {
@@ -99,70 +171,53 @@ class MovieItemModal extends Component {
       reverseButtons: true,
     }).then((result) => {
       if (result.value) {
-        /* DELETE MOVIE LOGIC */
+        this.props.deleteMovieByID(this.state.id);
+        this.props.closeModal();
       }
     });
   }
 
   validateField = (field, value) => {
-    const numbersRegex = /^[0-9]*$/;
-    const alphanumericRegex = /^[a-z0-9 ]+$/i;
-    let { formValidationTexts } = this.state;
-    // Empty validation
-    if (!value) {
-      formValidationTexts = {
-        ...formValidationTexts,
-        [field]: 'This field must not be empty',
-      };
-    } else {
-      formValidationTexts = {
-        ...formValidationTexts,
-        [field]: '',
-      };
+    return new Promise((resolve, reject) => {
+      const numbersRegex = /^[0-9]*$/;
+      const alphanumericRegex = /^[a-z0-9 ]+$/i;
+      // Empty validation  
+      if (!value) {
+        reject('This field must not be empty');
+      }
       // Field specific validation
       switch (field) {
         case 'runtime':
           // This must contain numbers
           if (!alphanumericRegex.test(value)) {
-            formValidationTexts = {
-              ...formValidationTexts,
-              [field]: 'This field can only contain alphanumeric characters(letters, numbers)',
-            };
+            reject('This field can only contain alphanumeric characters(letters, numbers)');
           }
+          resolve();
           break;
         case 'year':
           // This needs to be a number
           if (!numbersRegex.test(value) || (value <= 1000)) {
-            formValidationTexts = {
-              ...formValidationTexts,
-              [field]: 'This field must contain a valid year',
-            };
+            reject('This field must contain a valid year');
           }
+          resolve();
           break;
-
         default:
+          resolve();
           break;
       }
-    }
-    this.setState({ formValidationTexts });
-    if (!this.state.formValidationTexts[field]) {
-      // Field is validated
-      return true;
-    }
-    return false;
+    });
   }
 
   render() {
     // This can be true or false. False means new movie
-    const editMode = !_.isEmpty(this.state.id);
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.closeModal}>
         <Form onSubmit={this.handleSubmit} autoComplete="off">
-          <ModalHeader toggle={this.props.closeModal}>{editMode ? 'Edit Movie' : 'New Movie'}</ModalHeader>
+          <ModalHeader toggle={this.props.closeModal}>{this.state.editMode ? 'Edit Movie' : 'New Movie'}</ModalHeader>
           <ModalBody>
             <FormGroup>
               <Label for="id">ID</Label>
-              <Input type="text" name="id" id="movieID" value={this.state.id} disabled />
+              <Input type="text" name="id" id="movieID" value={this.state.editMode ? this.state.id : this.props.movieList.length + 1} disabled />
             </FormGroup>
             <FormGroup>
               <Label for="title">Title</Label>
@@ -200,7 +255,7 @@ class MovieItemModal extends Component {
           </ModalBody>
           <ModalFooter>
             <div className="d-flex justify-content-center align-items-center w-100">
-              <Button className="flex-fill m-2" type="button" color="danger" onClick={this.deleteSelectedMovie}><FontAwesomeIcon icon='trash-alt' /> Delete</Button>
+              <Button hidden={!this.state.editMode} className="flex-fill m-2" type="button" color="danger" onClick={this.deleteSelectedMovie}><FontAwesomeIcon icon='trash-alt' /> Delete</Button>
               <Button className="flex-fill m-2" type="submit" color="success"><FontAwesomeIcon icon='save' /> Save</Button>
             </div>
           </ModalFooter>
@@ -217,7 +272,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   editMovieInfo,
-  deleteMovie,
+  deleteMovieByID,
+  addMovie,
 };
 
 

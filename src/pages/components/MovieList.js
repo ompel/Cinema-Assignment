@@ -1,29 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {
+  openMovieModal,
+  closeMovieModal,
+} from '../../redux/actions';
 import MovieItem from './MovieItem';
 import MovieItemModal from './MovieItemModal';
 import './MovieList.css';
 
 
 class MovieList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modal: false,
-      selectedMovie: {},
-    };
-  }
 
   openEditModal = (id) => {
     let movie = {
       ...this.props.movieList[id],
       id,
     }
-    this.setState({ modal: true, selectedMovie: movie });
-  }
-
-  closeModal = () => {
-    this.setState({ modal: false });
+    this.props.openMovieModal(movie);
   }
 
   render() {
@@ -36,9 +29,9 @@ class MovieList extends Component {
     return (
       <div>
         <MovieItemModal
-          isOpen={this.state.modal}
-          closeModal={this.closeModal}
-          movie={this.state.selectedMovie} />
+          isOpen={this.props.modal}
+          closeModal={this.props.closeMovieModal}
+          movie={this.props.selectedModalMovie} />
         <div className="d-flex flex-row flex-wrap justify-content-center p-2 MovieList">
           {movieList}
         </div>
@@ -50,9 +43,13 @@ class MovieList extends Component {
 
 const mapStateToProps = state => ({
   movieList: state.movies.list,
+  modal: state.movies.movieModal,
+  selectedModalMovie: state.movies.selectedModalMovie,
 });
 
 const mapDispatchToProps = {
+  openMovieModal,
+  closeMovieModal,
 };
 
 
