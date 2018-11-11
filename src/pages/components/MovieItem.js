@@ -22,7 +22,7 @@ class MovieItem extends Component {
         </div>
         <CardBody>
           <CardTitle>{title}</CardTitle>
-          <CardSubtitle>{`By ${director}`}</CardSubtitle>
+          <CardSubtitle>{`Directed by ${director}`}</CardSubtitle>
         </CardBody>
         <div className="img-crop">
           <CardImg top width="100%" src={poster} alt={`poster image for ${title} by ${director}`} />

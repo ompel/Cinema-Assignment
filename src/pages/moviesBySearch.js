@@ -40,8 +40,6 @@ class MoviesBySearch extends Component {
       const movies = [];
       async.each(response.data.Search, (movie, callback) => {
         this.getMovieData(movie.imdbID).then((movieData) => {
-          // movies[movie.imdbID] = movieData;
-          // const movieItem = <MovieItem key={movie.imdbID} data={movieData} />;
           movies.push(movieData);
           callback();
         }).catch((error) => {
@@ -78,7 +76,6 @@ class MoviesBySearch extends Component {
           Poster,
         } = movieData.data;
         resolve({
-          id: imdbID,
           title: Title,
           year: new Date(Released).getFullYear(),
           runtime: Runtime,

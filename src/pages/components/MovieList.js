@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import MovieItem from './MovieItem';
 import MovieItemModal from './MovieItemModal';
 import './MovieList.css';
@@ -13,7 +14,11 @@ class MovieList extends Component {
     };
   }
 
-  openEditModal = (movie) => {
+  openEditModal = (id) => {
+    let movie = {
+      ...this.props.movieList[id],
+      id,
+    }
     this.setState({ modal: true, selectedMovie: movie });
   }
 
@@ -22,8 +27,8 @@ class MovieList extends Component {
   }
 
   render() {
-    const movieList = this.props.movieList.map(movie => (
-      <div key={movie.id} className="card-item  m-2" onClick={() => this.openEditModal(movie)}>
+    const movieList = this.props.movieList.map((movie, id) => (
+      <div key={id} className="card-item  m-2" onClick={() => this.openEditModal(id)}>
         <MovieItem {...movie} />
       </div>
     ));
@@ -43,4 +48,15 @@ class MovieList extends Component {
 }
 
 
-export default MovieList;
+const mapStateToProps = state => ({
+  movieList: state.movies.list,
+});
+
+const mapDispatchToProps = {
+};
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MovieList);
