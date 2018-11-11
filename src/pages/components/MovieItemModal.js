@@ -11,22 +11,29 @@ import {
   FormGroup,
   Label,
   Input,
+  FormFeedback,
 } from 'reactstrap';
 import _ from 'lodash';
+import './MovieItemModal.css';
 
 
 class MovieItemModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      movie: {
-        id: this.props.movie.id || '',
-        title: this.props.movie.title || '',
-        year: this.props.movie.year || '',
-        runtime: this.props.movie.runtime || '',
-        genre: this.props.movie.genre || '',
-        director: this.props.movie.director || '',
-        poster: this.props.movie.poster || '',
+      id: this.props.movie.id || '',
+      title: this.props.movie.title || '',
+      year: this.props.movie.year || '',
+      runtime: this.props.movie.runtime || '',
+      genre: this.props.movie.genre || '',
+      director: this.props.movie.director || '',
+      poster: this.props.movie.poster || '',
+      formValidationTexts: {
+        title: '',
+        year: '',
+        runtime: '',
+        genre: '',
+        director: '',
       },
     };
   }
@@ -34,12 +41,13 @@ class MovieItemModal extends Component {
   componentDidUpdate = (prevProps, prevState) => {
     // Deep check of equality
     if (!_.isEqual(prevProps.movie, this.props.movie)) {
-      this.setState({ movie: this.props.movie });
+      this.setState(this.props.movie);
     }
   }
 
   handleChange = (event) => {
-    this.setState({ movie: { [event.target.name]: event.target.value } });
+    this.validateField(event.target.name, event.target.value);
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   handleSubmit = (e) => {
@@ -47,49 +55,91 @@ class MovieItemModal extends Component {
     console.log(this.state);
   }
 
+  validateField = (field, value) => {
+    // Empty validation
+    if (_.isEmpty(value)) {
+      this.setState({
+        formValidationTexts: {
+          ...this.state.formValidationTexts,
+          [field]: 'This field must not be empty',
+        },
+      });
+    } else {
+      this.setState({
+        formValidationTexts: {
+          ...this.state.formValidationTexts,
+          [field]: '',
+        },
+      });
+
+      // Field specific validation
+      switch (field) {
+        case 'runtime':
+          // This must contain numbers
+          break;
+        case 'year':
+        // This needs to be a number
+        var regex = /[0-9]|\./;
+        if (regex.test(value)) {
+          console.log('this is a number');
+          
+        }
+        
+        default:
+          break;
+      }
+    }
+  }
+
   render() {
     // This can be true or false. False means new movie
-    const editMode = !_.isEmpty(this.state.movie);
+    const editMode = !_.isEmpty(this.state.id);
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <Modal isOpen={this.props.isOpen} toggle={this.props.closeModal}>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.closeModal}>
+        <Form onSubmit={this.handleSubmit} autoComplete="off">
           <ModalHeader toggle={this.props.closeModal}>{editMode ? 'Edit Movie' : 'New Movie'}</ModalHeader>
           <ModalBody>
-          <FormGroup>
+            <FormGroup>
               <Label for="id">ID</Label>
-              <Input type="text" name="id" id="movieID" value={this.state.movie.id} disabled />
+              <Input type="text" name="id" id="movieID" value={this.state.id} disabled />
             </FormGroup>
             <FormGroup>
               <Label for="title">Title</Label>
-              <Input type="text" name="title" id="movieTitle" value={this.state.movie.title} onChange={this.handleChange} />
+              <Input invalid={!_.isEmpty(this.state.formValidationTexts.title)} type="text" name="title" id="movieTitle" value={this.state.title} onChange={this.handleChange} />
+              <FormFeedback>{this.state.formValidationTexts.title}</FormFeedback>
             </FormGroup>
             <FormGroup>
               <Label for="year">Year</Label>
-              <Input type="number" name="year" id="movieYear" value={this.state.movie.year} onChange={this.handleChange} />
+              <Input invalid={!_.isEmpty(this.state.formValidationTexts.year)} type="number" name="year" id="movieYear" value={this.state.year} onChange={this.handleChange} />
+              <FormFeedback>{this.state.formValidationTexts.year}</FormFeedback>
             </FormGroup>
             <FormGroup>
               <Label for="runtime">Runtime</Label>
-              <Input type="text" name="runtime" id="movieRuntime" value={this.state.movie.runtime} onChange={this.handleChange} />
+              <Input invalid={!_.isEmpty(this.state.formValidationTexts.runtime)} type="text" name="runtime" id="movieRuntime" value={this.state.runtime} onChange={this.handleChange} />
+              <FormFeedback>{this.state.formValidationTexts.runtime}</FormFeedback>
             </FormGroup>
             <FormGroup>
               <Label for="genre">Genre</Label>
-              <Input type="text" name="genre" id="movieGenre" value={this.state.movie.genre} onChange={this.handleChange} />
+              <Input invalid={!_.isEmpty(this.state.formValidationTexts.genre)} type="text" name="genre" id="movieGenre" value={this.state.genre} onChange={this.handleChange} />
+              <FormFeedback>{this.state.formValidationTexts.genre}</FormFeedback>
             </FormGroup>
             <FormGroup>
               <Label for="director">Director</Label>
-              <Input type="text" name="director" id="movieDirector" value={this.state.movie.director} onChange={this.handleChange} />
+              <Input invalid={!_.isEmpty(this.state.formValidationTexts.director)} type="text" name="director" id="movieDirector" value={this.state.director} onChange={this.handleChange} />
+              <FormFeedback>{this.state.formValidationTexts.director}</FormFeedback>
             </FormGroup>
             <FormGroup>
               <Label for="poster">Poster</Label>
-              <Input type="text" name="poster" id="moviePoster" value={this.state.movie.poster} onChange={this.handleChange} />
+              <Input type="text" name="poster" id="moviePoster" value={this.state.poster} onChange={this.handleChange} />
               <small id="posterHelp" className="form-text text-muted">This is not required, although any image URL will work.</small>
             </FormGroup>
           </ModalBody>
           <ModalFooter>
             <Button type="submit" color="primary">Do Something</Button>
           </ModalFooter>
-        </Modal>
-      </Form>
+        </Form>
+      </Modal>
+
     );
   }
 }
