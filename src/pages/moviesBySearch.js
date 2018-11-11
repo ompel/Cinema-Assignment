@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import _ from 'lodash';
+import async from 'async';
 import queryString from 'query-string';
 import { withRouter, Link } from 'react-router-dom';
 import {
@@ -49,15 +49,19 @@ class MoviesBySearch extends Component {
         s: queryString,
       },
     }).then((response) => {
-      // const movies = {};
-      _.each(response.data.Search, (movie) => {
+      async.each(response.data.Search, (movie, callback) => {
         this.getMovieData(movie.imdbID).then((movieData) => {
           this.props.addMovie(movieData);
+          callback();
         });
+      }, (error) => {
+        if (!error) {
+          this.setState({
+            loading: false,
+          });
+        }
       });
-      this.setState({
-        loading: false,
-      });
+
     }).catch((e) => {
       // in case of any error fetching the movie list
       console.log(e);

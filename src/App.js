@@ -14,7 +14,7 @@ library.add(faEdit, faTrashAlt, faSave);
 class App extends Component {
   render() {
     return (
-      <Router basename={process.env.PUBLIC_URL}>
+      <Router>
         <div className="container-fluid">
           <Switch>
             <Route path="/" exact component={Home} />
