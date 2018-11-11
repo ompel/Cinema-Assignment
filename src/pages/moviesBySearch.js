@@ -19,7 +19,7 @@ import {
 } from '../redux/actions';
 import MovieList from './components/MovieList';
 import Load from './components/Load';
-import './moviesBySearch.css';
+import './MoviesBySearch.css';
 
 const moviesApiURL = 'http://www.omdbapi.com/';
 const moviesApiKey = '71cd4388';

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faEdit, faTrashAlt, faSave } from '@fortawesome/free-solid-svg-icons';
-import Home from './pages/home';
-import NotFound from './pages/notFound';
-import MoviesBySearch from './pages/moviesBySearch';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import MoviesBySearch from './pages/MoviesBySearch';
 import './App.css';
 
 

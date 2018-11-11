@@ -11,7 +11,7 @@ import {
 
 class Home extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       searchQuery: '',
     };
@@ -39,12 +39,12 @@ class Home extends Component {
           <div className="lead d-flex">
             <Button onClick={() => this.props.history.push('/search?s=marvel')} color="primary" className="m-2">Search Marvel</Button>
             <Button onClick={() => this.props.history.push('/search?s=iron man')} color="primary" className="m-2">Search Iron Man</Button>
-            <Form inline onSubmit={this.handleSubmit}>
+            <Form inline onSubmit={this.handleSubmit} >
               <FormGroup>
                 <Label for="search" className="mr-1 ml-2">Free Query:</Label>
                 <Input type="text" name="search" id="search" placeholder="Enter a query..." value={this.state.searchQuery} onChange={this.handleChange} />
               </FormGroup>
-              <Button>Submit</Button>
+              <Button>Search</Button>
             </Form>
           </div>
         </Jumbotron>

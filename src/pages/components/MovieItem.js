@@ -5,7 +5,6 @@ import {
   CardBody,
   CardTitle,
   CardSubtitle,
-  Button
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './MovieItem.css';

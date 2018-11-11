@@ -166,7 +166,6 @@ class MovieItemModal extends Component {
   }
 
   deleteSelectedMovie = () => {
-    console.log(`Delete movie id: ${this.state.id}`);
     ReactSwal.fire({
       title: 'Delete Movie?',
       html: <p>Are you sure you want to delete: <em>{this.state.title}</em>?</p>,
