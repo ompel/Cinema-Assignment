@@ -1,7 +1,5 @@
-import _ from 'lodash';
 import {
     RESET_MOVIES,
-    APPEND_MOVIES,
     SET_MOVIES_PAGE,
     EDIT_MOVIE_INFO,
     DELETE_MOVIE,
@@ -42,12 +40,6 @@ export default (state = initalState, action) => {
                 list: [],
             };
 
-        case APPEND_MOVIES:
-            return {
-                ...state,
-                list: [...state.list, ...action.movies],
-            };
-
         case SET_MOVIES_PAGE:
             return {
                 ...state,
@@ -70,9 +62,11 @@ export default (state = initalState, action) => {
             };
 
         case ADD_MOVIE:
+            let movie = action.movie;
+            movie.title.replace(/[^\w\s]/gi, '').replace(/\b\w/g, l => l.toUpperCase());
             return {
                 ...state,
-                list: insertItem(state.list, { id: state.list.length, movie: action.movie }),
+                list: insertItem(state.list, { id: state.list.length, movie: movie }),
             };
 
         case EDIT_MOVIE_INFO:

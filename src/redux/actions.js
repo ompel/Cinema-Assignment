@@ -1,6 +1,5 @@
 import {
     RESET_MOVIES,
-    APPEND_MOVIES,
     SET_MOVIES_PAGE,
     EDIT_MOVIE_INFO,
     DELETE_MOVIE,
@@ -13,11 +12,6 @@ export const resetMovies = () => ({
     type: RESET_MOVIES,
 });
 
-export const appendMovies = movies => ({
-    type: APPEND_MOVIES,
-    movies,
-});
-
 export const setMoviesPage = (moviesApiPage, moviesNumberOfPages) => ({
     type: SET_MOVIES_PAGE,
     moviesApiPage,
@@ -26,7 +20,7 @@ export const setMoviesPage = (moviesApiPage, moviesNumberOfPages) => ({
 
 export const openMovieModal = movie => ({
     type: OPEN_MOVIE_MODAL,
-    movie
+    movie,
 });
 
 export const closeMovieModal = () => ({

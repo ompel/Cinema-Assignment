@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import async from 'async';
+import _ from 'lodash';
 import queryString from 'query-string';
 import { withRouter, Link } from 'react-router-dom';
 import {
@@ -13,11 +13,12 @@ import {
 } from 'reactstrap';
 import {
   resetMovies,
-  appendMovies,
   setMoviesPage,
   openMovieModal,
+  addMovie,
 } from '../redux/actions';
 import MovieList from './components/MovieList';
+import Load from './components/Load';
 import './moviesBySearch.css';
 
 const moviesApiURL = 'http://www.omdbapi.com/';
@@ -29,6 +30,7 @@ class MoviesBySearch extends Component {
     super(props);
     this.state = {
       search: {},
+      loading: true,
     };
   }
 
@@ -48,21 +50,13 @@ class MoviesBySearch extends Component {
       },
     }).then((response) => {
       // const movies = {};
-      const movies = [];
-      async.each(response.data.Search, (movie, callback) => {
+      _.each(response.data.Search, (movie) => {
         this.getMovieData(movie.imdbID).then((movieData) => {
-          movies.push(movieData);
-          callback();
-        }).catch((error) => {
-          callback(error);
+          this.props.addMovie(movieData);
         });
-      }, (error) => {
-        if (error) {
-          console.log(error);
-        } else {
-          // Appending the movies to the redux store
-          this.props.appendMovies(movies);
-        }
+      });
+      this.setState({
+        loading: false,
       });
     }).catch((e) => {
       // in case of any error fetching the movie list
@@ -102,19 +96,24 @@ class MoviesBySearch extends Component {
 
   render() {
     const currentQuery = this.state.search.s ? this.state.search.s.replace(/\b\w/g, l => l.toUpperCase()) : '';
+    if (!this.state.loading) {
+      return (
+        <div className="MoviesBySearch">
+          <Navbar className="fixed-top justify-content-center" color="dark" light expand="lg">
+            <Breadcrumb className="mr-auto">
+              <BreadcrumbItem><Link to='/'>Herolo React.js Cinema</Link></BreadcrumbItem>
+              <BreadcrumbItem active>{`Search: ${currentQuery}`}</BreadcrumbItem>
+            </Breadcrumb>
+            <Nav className="ml-auto" navbar>
+              <Button color="success" onClick={() => this.props.openMovieModal()}>Add new movie</Button>
+            </Nav>
+          </Navbar>
+          <MovieList movieList={this.props.movies} />
+        </div>
+      );
+    }
     return (
-      <div className="MoviesBySearch">
-        <Navbar className="fixed-top justify-content-center" color="dark" light expand="lg">
-          <Breadcrumb className="mr-auto">
-            <BreadcrumbItem><Link to='/'>Herolo React.js Cinema</Link></BreadcrumbItem>
-            <BreadcrumbItem active>{`Search: ${currentQuery}`}</BreadcrumbItem>
-          </Breadcrumb>
-          <Nav className="ml-auto" navbar>
-            <Button color="success" onClick={() => this.props.openMovieModal()}>Add new movie</Button>
-          </Nav>
-        </Navbar>
-        <MovieList movieList={this.props.movies} />
-      </div>
+      <Load loadingText="Loading..." />
     );
   }
 }
@@ -126,9 +125,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   resetMovies,
-  appendMovies,
   setMoviesPage,
   openMovieModal,
+  addMovie,
 };
 
 

@@ -122,7 +122,13 @@ class MovieItemModal extends Component {
     // Final form validation
     async.each(['title', 'year', 'runtime', 'genre', 'director'], (field, callback) => {
       const value = this.state[field];
-      this.validateField(field, value).then(() => {
+      this.validateField(field, value).then((response) => {
+        if (response) {
+          this.setState({
+            ...this.state,
+            [field]: response,
+          });
+        }
         callback();
       }).catch((error) => {
         // The form has validation error, present alert
@@ -187,6 +193,18 @@ class MovieItemModal extends Component {
       }
       // Field specific validation
       switch (field) {
+        case 'title':
+          let title = value.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\b\w/g, l => l.toUpperCase());
+          // Check if movie name already exists
+          if (!this.state.editMode) {
+            _.each(this.props.movieList, (movie) => {
+              if (movie.title === title) {
+                reject('This movie title already exists')
+              }
+            });
+          }
+          resolve(title);
+          break;
         case 'runtime':
           // This must contain numbers
           if (!alphanumericRegex.test(value)) {
