@@ -21,7 +21,7 @@ import MovieList from './components/MovieList';
 import Load from './components/Load';
 import './MoviesBySearch.css';
 
-const moviesApiURL = 'http://www.omdbapi.com/';
+const moviesApiURL = 'https://www.omdbapi.com/';
 const moviesApiKey = '71cd4388';
 
 
