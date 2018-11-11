@@ -4,10 +4,12 @@ import axios from 'axios';
 import async from 'async';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
-import { resetMovies, appendMovies, setMoviesPage, setMoviesGenres } from '../redux/actions';
+import {
+  resetMovies, appendMovies, setMoviesPage,
+} from '../redux/actions';
 import MovieList from './components/MovieList';
 
-const moviesApiURL = `http://www.omdbapi.com/`;
+const moviesApiURL = 'http://www.omdbapi.com/';
 const moviesApiKey = '71cd4388';
 
 
@@ -15,7 +17,7 @@ class MoviesBySearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: {}
+      search: {},
     };
   }
 
@@ -111,7 +113,6 @@ const mapDispatchToProps = {
   resetMovies,
   appendMovies,
   setMoviesPage,
-  setMoviesGenres,
 };
 
 

@@ -2,28 +2,24 @@ import React, { Component } from 'react';
 import {
   Card,
   CardImg,
-  CardText,
   CardBody,
   CardTitle,
   CardSubtitle,
   Button
 } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './MovieItem.css';
 
 class MovieItem extends Component {
   render() {
-    const {
-      id,
-      title,
-      director,
-      genre,
-      runtime,
-      year,
-      poster
-    } = this.props;
-
+    const { title, director, poster } = this.props;
     return (
-      <Card className="MovieItem m-2 text-center">
+      <Card className="MovieItem text-center">
+        <div id="card-overlay">
+          <div className="h-100 d-flex justify-content-center align-items-center overlay-content">
+            <FontAwesomeIcon icon='edit' />
+          </div>
+        </div>
         <CardBody>
           <CardTitle>{title}</CardTitle>
           <CardSubtitle>{`By ${director}`}</CardSubtitle>
