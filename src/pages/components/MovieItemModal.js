@@ -59,6 +59,14 @@ class MovieItemModal extends Component {
           ...this.state,
           ...this.props.movie,
           editMode: true,
+          formValidationTexts: {
+            title: '',
+            year: '',
+            runtime: '',
+            genre: '',
+            director: '',
+          },
+          formValidationErrors: false,
         });
       } else {
         // New movie mode, reset local state

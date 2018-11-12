@@ -34,7 +34,7 @@ class MoviesBySearch extends Component {
     this.state = {
       search: {},
       loading: true,
-      collapsed: false,
+      collapsed: true,
     };
   }
 
