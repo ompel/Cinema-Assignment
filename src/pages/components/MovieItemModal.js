@@ -177,6 +177,10 @@ class MovieItemModal extends Component {
     }).then((result) => {
       if (result.value) {
         this.props.deleteMovieByID(this.state.id);
+        ReactSwal.fire({
+          title: 'Deleted!',
+          type: 'success',
+        });
         this.props.closeModal();
       }
     });
