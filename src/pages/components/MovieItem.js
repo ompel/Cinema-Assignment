@@ -16,7 +16,7 @@ class MovieItem extends Component {
       <Card className="MovieItem text-center">
         <div id="card-overlay">
           <div className="h-100 d-flex justify-content-center align-items-center overlay-content">
-            <FontAwesomeIcon icon='edit' />
+            <FontAwesomeIcon icon="edit" />
           </div>
         </div>
         <CardBody>

@@ -8,6 +8,7 @@ import {
   Label,
   Input,
 } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class Home extends Component {
   constructor(props) {
@@ -44,7 +45,7 @@ class Home extends Component {
                 <Label for="search" className="mr-1 ml-2">Free Query:</Label>
                 <Input type="text" name="search" id="search" placeholder="Enter a query..." value={this.state.searchQuery} onChange={this.handleChange} />
               </FormGroup>
-              <Button>Search</Button>
+              <Button><FontAwesomeIcon icon="search" /> Search</Button>
             </Form>
           </div>
         </Jumbotron>

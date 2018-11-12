@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-  editMovieInfo,
-  deleteMovieByID,
-  addMovie,
-} from '../../redux/actions';
+import _ from 'lodash';
+import async from 'async';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import {
@@ -20,9 +18,11 @@ import {
   FormFeedback,
   Alert,
 } from 'reactstrap';
-import _ from 'lodash';
-import async from 'async';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  editMovieInfo,
+  deleteMovieByID,
+  addMovie,
+} from '../../redux/actions';
 import './MovieItemModal.css';
 
 

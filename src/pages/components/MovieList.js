@@ -6,7 +6,6 @@ import {
 } from '../../redux/actions';
 import MovieItem from './MovieItem';
 import MovieItemModal from './MovieItemModal';
-import './MovieList.css';
 
 
 class MovieList extends Component {

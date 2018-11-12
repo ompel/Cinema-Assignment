@@ -30,7 +30,7 @@
 }
 
 #card-overlay:hover {
-  opacity: .7;
+  opacity: .75;
   transition: opacity .5s;
   cursor: pointer;
 }
@@ -40,7 +40,7 @@
   line-height: 150px;
   font-family: 'arial';
   text-align: center;
-  font-size: 150px;
+  font-size: 120px;
   margin-left: 30px;
 }
 

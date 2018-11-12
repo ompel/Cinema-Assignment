@@ -2,4 +2,4 @@
 
 ---
 ### Below is the link to the live demo:
-[Live Demo](https://ompel.github.io/CinemaAssignment-React.js/ "Live Demo")
+[Live Demo](https://herolo-cinema-react.firebaseapp.com "Live Demo")

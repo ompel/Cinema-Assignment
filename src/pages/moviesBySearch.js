@@ -11,6 +11,7 @@ import {
   Navbar,
   Nav,
 } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   resetMovies,
   setMoviesPage,
@@ -103,13 +104,13 @@ class MoviesBySearch extends Component {
     if (!this.state.loading) {
       return (
         <div className="MoviesBySearch">
-          <Navbar className="fixed-top justify-content-center" color="dark" light expand="lg">
+          <Navbar className="fixed-top justify-content-center" color="light" light expand="lg">
             <Breadcrumb className="mr-auto">
               <BreadcrumbItem><Link to='/'>Herolo React.js Cinema</Link></BreadcrumbItem>
               <BreadcrumbItem active>{`Search: ${currentQuery}`}</BreadcrumbItem>
             </Breadcrumb>
             <Nav className="ml-auto" navbar>
-              <Button color="success" onClick={() => this.props.openMovieModal()}>Add new movie</Button>
+              <Button color="success" onClick={() => this.props.openMovieModal()}><FontAwesomeIcon icon="plus"/> Add new movie</Button>
             </Nav>
           </Navbar>
           <MovieList movieList={this.props.movies} />
