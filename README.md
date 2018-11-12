@@ -2,4 +2,4 @@
 
 ---
 ### Below is the link to the live demo:
-[Live Demo](https://herolo-cinema-react.firebaseapp.com "Live Demo")
+<a href="https://herolo-cinema-react.firebaseapp.com" target="_blank">Live Demo</a>
