@@ -1,0 +1,11 @@
+
+.no-results .text-center {
+  font-size: 1.2em;
+  opacity: 0.2;
+}
+
+.no-results .text {
+  font-weight: 300;
+  font-size: 1.5em;
+  opacity: 0.4;
+}

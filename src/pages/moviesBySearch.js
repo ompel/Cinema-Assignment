@@ -10,6 +10,8 @@ import {
   BreadcrumbItem,
   Navbar,
   Nav,
+  NavbarToggler,
+  Collapse,
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -32,6 +34,7 @@ class MoviesBySearch extends Component {
     this.state = {
       search: {},
       loading: true,
+      collapsed: false,
     };
   }
 
@@ -40,6 +43,12 @@ class MoviesBySearch extends Component {
     this.setState({ search });
     this.props.resetMovies();
     this.getMovieList(search.s);
+  }
+
+  toggleNavbar = () => {
+    this.setState({
+      collapsed: !this.state.collapsed
+    });
   }
 
   // Movies data fetching logic
@@ -103,15 +112,21 @@ class MoviesBySearch extends Component {
     const currentQuery = this.state.search.s ? this.state.search.s.replace(/\b\w/g, l => l.toUpperCase()) : '';
     if (!this.state.loading) {
       return (
-        <div className="MoviesBySearch">
-          <Navbar className="fixed-top justify-content-center" color="light" light expand="lg">
-            <Breadcrumb className="mr-auto">
-              <BreadcrumbItem><Link to='/'>Herolo React.js Cinema</Link></BreadcrumbItem>
-              <BreadcrumbItem active>{`Search: ${currentQuery}`}</BreadcrumbItem>
-            </Breadcrumb>
-            <Nav className="ml-auto" navbar>
-              <Button color="success" onClick={() => this.props.openMovieModal()}><FontAwesomeIcon icon="plus"/> Add new movie</Button>
-            </Nav>
+        <div className={`MoviesBySearch d-flex ${this.props.movies.length > 0 ? '' : 'justify-content-center'}`}>
+          <Navbar className="fixed-top" color="light" light expand="lg">
+            <div className="w-100 d-flex justify-content-between">
+              <Breadcrumb className="mr-auto">
+                <BreadcrumbItem><Link to='/'>Herolo React.js Cinema</Link></BreadcrumbItem>
+                <BreadcrumbItem active>{`Search: ${currentQuery}`}</BreadcrumbItem>
+              </Breadcrumb>
+              <NavbarToggler onClick={this.toggleNavbar} className="" />
+            </div>
+
+            <Collapse isOpen={!this.state.collapsed} navbar>
+              <Nav className="ml-auto" navbar>
+                <Button color="success" onClick={() => this.props.openMovieModal()}><FontAwesomeIcon icon="plus" /> Add new movie</Button>
+              </Nav>
+            </Collapse>
           </Navbar>
           <MovieList movieList={this.props.movies} />
         </div>

@@ -6,7 +6,7 @@ import {
 } from '../../redux/actions';
 import MovieItem from './MovieItem';
 import MovieItemModal from './MovieItemModal';
-
+import NoResults from '../components/NoResults';
 
 class MovieList extends Component {
 
@@ -26,13 +26,13 @@ class MovieList extends Component {
     ));
 
     return (
-      <div>
+      <div className="d-flex">
         <MovieItemModal
           isOpen={this.props.modal}
           closeModal={this.props.closeMovieModal}
           movie={this.props.selectedModalMovie} />
         <div className="d-flex flex-row flex-wrap justify-content-center p-2 MovieList">
-          {movieList}
+          {movieList.length > 0 ? movieList : <NoResults /> }
         </div>
       </div>
     );

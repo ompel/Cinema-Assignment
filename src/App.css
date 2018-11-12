@@ -8,7 +8,15 @@
 }
 
 body {
-  padding-top: 65px;
+  /* padding-top: 65px; */
   background-color: #e9ecef;
   min-height: 100vh;
+}
+
+.App {
+  padding-top: 65px;
+}
+
+#root {
+  height: 100vh;
 }

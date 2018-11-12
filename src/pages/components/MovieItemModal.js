@@ -230,6 +230,14 @@ class MovieItemModal extends Component {
   }
 
   render() {
+    const newMovieID = () => {
+      if (this.state.editMode) {
+        return this.state.id;
+      } else if (this.props.movieList.length === 0) {
+        return 0;
+      }
+      return this.props.movieList.length + 1;
+    };
     // This can be true or false. False means new movie
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.closeModal}>
@@ -238,7 +246,7 @@ class MovieItemModal extends Component {
           <ModalBody>
             <FormGroup>
               <Label for="id">ID</Label>
-              <Input type="text" name="id" id="movieID" value={this.state.editMode ? this.state.id : this.props.movieList.length + 1} disabled />
+              <Input type="text" name="id" id="movieID" value={newMovieID()} disabled />
             </FormGroup>
             <FormGroup>
               <Label for="title">Title</Label>
